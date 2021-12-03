@@ -39,7 +39,33 @@ public class SaleRegisterController {
             throw new SaleRegisterNotFoundException("El cliente no existe");
         }
     }
-
+    @GetMapping("/saleregisterspp/{nombreproducto}") // convert the next method to an endpoint
+    List<SaleRegister> getSaleRegisterByNombreProducto(@PathVariable String nombreproducto){
+        List<SaleRegister> saleRegister = repository.getByNombreProducto(nombreproducto);
+        int corroborate = 0;
+        int corroborated = 0;
+        for(SaleRegister i : saleRegister){
+            if(i.getNombreProducto().equals(nombreproducto)){
+                corroborate = 0;
+                corroborated = 1;
+            }
+            else{
+                if (corroborated == 0){
+                    corroborate = 1;
+                }
+            }
+        }
+        if (corroborate == 0){
+            return this.repository.getByNombreProducto(nombreproducto);
+        }
+        else{
+            throw new SaleRegisterNotFoundException("El producto no existe");
+        }
+    }
+    @GetMapping("/saleregisterscp/{nombrecliente}/{nombreproducto}") // convert the next method to an endpoint
+    List<SaleRegister> getSaleRegisterByNombreProductoAndNombreClienteAndProveedor( @PathVariable String nombrecliente,@PathVariable String nombreproducto){
+        return this.repository.getByNombreProductoAndNombreCliente(nombreproducto,nombrecliente);
+    }
     @GetMapping("/saleregistersc/{proveedor}/{nombrecliente}") // convert the next method to an endpoint
     List<SaleRegister> getSaleRegisterByProveedorAndCliente(@PathVariable String proveedor, @PathVariable String nombrecliente){
         return this.repository.getByProveedorAndNombreCliente(proveedor, nombrecliente);
